@@ -30,15 +30,7 @@ class _ArticleViewState extends State<ArticleView> {
             )
           ],
         ),
-        actions: [
-          Opacity(
-            opacity: 0,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Icon(Icons.save),
-            ),
-          )
-        ],
+       
         centerTitle: true,
         elevation: 0.0,
       ),
