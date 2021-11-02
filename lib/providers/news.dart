@@ -1,6 +1,8 @@
 import 'dart:convert';
-import '../models/article_model.dart';
+
 import 'package:http/http.dart' as http;
+
+import '../models/article_model.dart';
 
 class News {
   List<ArticleModel> news = [];
@@ -25,7 +27,6 @@ class News {
             );
             news.add(articleModel);
           }
-         
         },
       );
     }
@@ -55,7 +56,6 @@ class CatrgoryNews {
             );
             news.add(articleModel);
           }
-         
         },
       );
     }

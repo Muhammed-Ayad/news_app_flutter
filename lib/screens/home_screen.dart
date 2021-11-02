@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import '../widgets/blog_tile.dart';
-import '../widgets/category_tile.dart';
-import '../helper/category_data.dart';
-import '../helper/news.dart';
-import '../models/article_model.dart';
-import '../models/category_models.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+import '../widgets/app_bar_widget.dart';
+import '../widgets/blog_widget.dart';
+import '../widgets/category_widget.dart';
+import '../providers/category_data.dart';
+import '../providers/news.dart';
+import '../models/article_model.dart';
+
+class HomeScreen extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
-  List<CategoryModels> categories = [];
+class _HomeScreenState extends State<HomeScreen> {
   List<ArticleModel> articles = [];
   bool _loading = true;
 
-   getNews() async {
+  getNews() async {
     News newsClass = News();
     await newsClass.getNews();
     articles = newsClass.news;
@@ -25,36 +26,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   void initState() {
     super.initState();
     _loading = true;
-    categories = getCategories()!;
     getNews();
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('News',
-              style: TextStyle(
-                color: Colors.blue,
-              ),),
-            Text(
-              'App'
-            )
-          ],
-        ),
-        centerTitle: true,
-        elevation: 0.0,
-      ),
+      appBar: appBar,
       body: _loading
           ? Center(
               child: Container(
@@ -62,27 +44,32 @@ class _HomePageState extends State<HomePage> {
               ),
             )
           : SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
                     Container(
                       // Categories
-                      
+
                       height: 70,
-                      child: ListView.builder(
-                        itemCount: categories.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return CategoryTile(
-                            imageUrl: categories[index].imageUrl,
-                            categoryName: categories[index].categoryName,
-                          );
-                        },
-                      ),
+                      child: Consumer(builder: (context, watch, child) {
+                        final items = watch(categoryProvider);
+                        return ListView.builder(
+                          itemCount: items.category.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return CategoryWidget(
+                              imageUrl:
+                                  items.category[index].imageUrl.toString(),
+                              categoryName:
+                                  items.category[index].categoryName.toString(),
+                            );
+                          },
+                        );
+                      }),
                     ),
-          
+
                     // Blogs
                     Container(
                       padding: EdgeInsets.only(top: 16),
@@ -91,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return BlogTile(
+                          return BlogWidget(
                             imageUrl: articles[index].urlToImage,
                             title: articles[index].title,
                             desc: articles[index].description,
@@ -103,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-          ),
+            ),
     );
   }
 }

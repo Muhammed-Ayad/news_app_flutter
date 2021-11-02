@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../screens/category_news.dart';
 
-class CategoryTile extends StatelessWidget {
-  final imageUrl, categoryName;
-  CategoryTile({
+import '../screens/category_news_screen.dart';
+
+class CategoryWidget extends StatelessWidget {
+  final String imageUrl;
+  final String categoryName;
+  CategoryWidget({
     required this.imageUrl,
     required this.categoryName,
   });
@@ -16,7 +18,7 @@ class CategoryTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategoryNews(
+            builder: (context) => CategoryNewsScreen(
               category: categoryName.toLowerCase(),
             ),
           ),
